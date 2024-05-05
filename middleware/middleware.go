@@ -6,13 +6,14 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/model"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing Authorization header"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, model.HTTPErrorResponse("Missing Authorization header"))
 			return
 		}
 
@@ -21,13 +22,13 @@ func AuthMiddleware() gin.HandlerFunc {
 			return []byte("cryptocurrencies-price-tracker-secret"), nil
 		})
 		if err != nil || !token.Valid {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired token"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, model.HTTPErrorResponse("Invalid or expired token"))
 			return
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, model.HTTPErrorResponse("Invalid token claims"))
 			return
 		}
 

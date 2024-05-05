@@ -61,6 +61,14 @@ func (c *trackerSvc) AddUserTrackedCoin(req *model.TrackerEntity) error {
 	return nil
 }
 
+func (c *trackerSvc) DeleteUserTrackedCoin(userID int, coinID string) error {
+	if err := c.repos.Tracker.Delete(userID, coinID); err != nil {
+		return err
+	}
+	
+	return nil
+}
+
 func (c *trackerSvc) GetList() (*[]model.TrackerEntity, error) {
 	res, err := c.repos.Tracker.GetList()
 	if err != nil {

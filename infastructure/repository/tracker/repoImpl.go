@@ -56,6 +56,15 @@ func (t *trackerRepoImpl) Create(req *model.TrackerEntity) error {
 	return nil
 }
 
+func (t *trackerRepoImpl) Delete(userID int, coinID string) error {
+	_, err := t.db.Exec("DELETE FROM user_tracked_coins WHERE user_id = ? AND coin_id = ?", userID, coinID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (t *trackerRepoImpl) GetList() (*[]model.TrackerEntity, error) {
 	rows, err := t.db.Query("SELECT utc.id, utc.user_id, utc.coin_id, utc.coin_name, utc.coin_symbol "+
 		"FROM user_tracked_coins utc")
