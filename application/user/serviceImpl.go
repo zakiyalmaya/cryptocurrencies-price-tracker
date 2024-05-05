@@ -35,6 +35,7 @@ func (u *UserSvc) Login(auth *model.AuthRequest) (*model.AuthResponse, error) {
 
 	expirationTime := time.Now().Add(5 * time.Minute)
 	claims := &model.AuthClaims{
+		UserID:   user.ID,
 		Username: user.Username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
@@ -42,7 +43,7 @@ func (u *UserSvc) Login(auth *model.AuthRequest) (*model.AuthResponse, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte("zakiya_secret"))
+	tokenString, err := token.SignedString([]byte("cryptocurrencies-price-tracker-secret"))
 	if err != nil {
 		return nil, err
 	}

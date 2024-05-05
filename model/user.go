@@ -7,7 +7,7 @@ import (
 )
 
 type UserEntity struct {
-	ID        int64     `json:"id"`
+	ID        int       `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Username  string    `json:"username"`
@@ -22,6 +22,7 @@ type AuthRequest struct {
 }
 
 type AuthClaims struct {
+	UserID   int    `json:"userId"`
 	Username string `json:"username"`
 	jwt.StandardClaims
 }
