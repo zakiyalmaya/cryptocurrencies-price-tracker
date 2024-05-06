@@ -5,19 +5,25 @@ import (
 	"strconv"
 
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client/coincap"
+	exchangerate "github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client/exchange_rate"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/repository"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/model"
 )
 
 type trackerSvcImpl struct {
-	coinCapSvc coincap.CoinCapService
-	repos      *repository.Repositories
+	coinCapSvc      coincap.CoinCapService
+	exchangeRateSvc exchangerate.ExchangeRateService
+	repos           *repository.Repositories
 }
 
-func NewTrackerService(coinCapSvc coincap.CoinCapService, repos *repository.Repositories) TrackerService {
+func NewTrackerService(
+	coinCapSvc coincap.CoinCapService,
+	exchangeRateSvc exchangerate.ExchangeRateService,
+	repos *repository.Repositories) TrackerService {
 	return &trackerSvcImpl{
-		coinCapSvc: coinCapSvc,
-		repos:      repos,
+		coinCapSvc:      coinCapSvc,
+		exchangeRateSvc: exchangeRateSvc,
+		repos:           repos,
 	}
 }
 
@@ -45,18 +51,25 @@ func (t *trackerSvcImpl) GetUserTrackedList(username string) (*model.UserTracked
 		return nil, err
 	}
 
+	exchangeRate, err := t.exchangeRateSvc.GetLatest("USD", "IDR")
+	if err != nil {
+		return nil, err
+	}
+
 	for _, coin := range userCoins.TrackedCoins {
 		for _, asset := range resAssets.Data {
-			if asset.ID == coin.CoinID {
-				// todo convert USD to IDR
-				price, err := strconv.ParseFloat(asset.PriceUsd, 64)
-				if err != nil {
-					return nil, errors.New("error when parsing price")
-				}
-
-				coin.PriceIDR = &price
-				break
+			if asset.ID != coin.CoinID {
+				continue
 			}
+
+			price, err := strconv.ParseFloat(asset.PriceUsd, 64)
+			if err != nil {
+				return nil, errors.New("error when parsing price")
+			}
+
+			priceIDR := exchangeRate * price
+			coin.PriceIDR = &priceIDR
+			break
 		}
 	}
 
@@ -75,7 +88,7 @@ func (t *trackerSvcImpl) DeleteUserTrackedCoin(userID int, coinID string) error 
 	if err := t.repos.Tracker.Delete(userID, coinID); err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 

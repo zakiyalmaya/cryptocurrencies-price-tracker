@@ -11,18 +11,18 @@ import (
 )
 
 type coinCapSvcImpl struct {
-	CoinCap *client.APIClient
+	coinCap *client.APIClient
 }
 
 func NewCoinCapService(client *client.APIClient) CoinCapService {
 	return &coinCapSvcImpl{
-		CoinCap: client,
+		coinCap: client,
 	}
 }
 
 func (c *coinCapSvcImpl) GetAssets(req *model.AssetRequest) (*model.AssetsResponse, error) {
 	endpoint := "/v2/assets"
-	urlValue := c.CoinCap.BaseURL + endpoint
+	urlValue := c.coinCap.BaseURL + endpoint
 
 	queryParam := buildQueryParamGetAssets(req)
 	urlValue += "?" + queryParam
@@ -32,7 +32,7 @@ func (c *coinCapSvcImpl) GetAssets(req *model.AssetRequest) (*model.AssetsRespon
 		return nil, err
 	}
 
-	resp, err := c.CoinCap.Client.Do(request)
+	resp, err := c.coinCap.Client.Do(request)
 	if err != nil {
 		return nil, err
 	}

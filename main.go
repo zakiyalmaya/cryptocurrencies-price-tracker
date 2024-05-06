@@ -6,21 +6,26 @@ import (
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/application/user"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client/coincap"
+	exchangerate "github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client/exchange_rate"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/repository"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/transport"
 )
 
 func main() {
+	// instatiate repository
 	db := repository.DBConnection()
 	defer db.Close()
-
 	repository := repository.NewRespository(db)
-	client := client.NewAPIClient("https://api.coincap.io")
+
+	// instatiate client
+	clientCoinCap := client.NewAPIClient("https://api.coincap.io")
+	clientExchangeRate := client.NewAPIClient("https://api.apilayer.com/exchangerates_data")
 
 	// instatiate service
 	userService := user.NewUserService(repository)
-	coinCapService := coincap.NewCoinCapService(client)
-	trackerService := tracker.NewTrackerService(coinCapService, repository)
+	coinCapService := coincap.NewCoinCapService(clientCoinCap)
+	exchangeRateService := exchangerate.NewExchangeRateService(clientExchangeRate)
+	trackerService := tracker.NewTrackerService(coinCapService, exchangeRateService, repository)
 
 	// instatiate router
 	r := gin.Default()
