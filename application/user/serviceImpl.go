@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/constant"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/repository"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/model"
 )
@@ -35,7 +36,7 @@ func (u *userSvcImpl) Login(auth *model.AuthRequest) (*model.AuthResponse, error
 		return nil, fmt.Errorf("invalid password")
 	}
 
-	duration := 15 * time.Minute
+	duration := constant.RedisExpiration
 	expirationTime := time.Now().Add(duration)
 	claims := &model.AuthClaims{
 		UserID:   user.ID,
@@ -46,12 +47,12 @@ func (u *userSvcImpl) Login(auth *model.AuthRequest) (*model.AuthResponse, error
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte("cryptocurrencies-price-tracker-secret"))
+	tokenString, err := token.SignedString([]byte(constant.JwtSecret))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create token")
 	}
 
-	err = u.repos.Redcl.Set(context.Background(), "jwt-token-"+user.Username, tokenString, duration).Err()
+	err = u.repos.Redcl.Set(context.Background(), constant.PrefixKeyTokenRedis+user.Username, tokenString, duration).Err()
 	if err != nil {
 		log.Println("Failed to store token in Redis:", err.Error())
 		return nil, fmt.Errorf("failed to store token in Redis")
@@ -73,7 +74,7 @@ func (u *userSvcImpl) Register(user *model.UserEntity) error {
 }
 
 func (u *userSvcImpl) Logout(username string) error {
-	err := u.repos.Redcl.Del(context.Background(), "jwt-token-"+username).Err()
+	err := u.repos.Redcl.Del(context.Background(), constant.PrefixKeyTokenRedis+username).Err()
 	if err != nil {
 		log.Println("Failed to delete token from Redis:", err.Error())
 		return fmt.Errorf("failed to delete token from Redis")

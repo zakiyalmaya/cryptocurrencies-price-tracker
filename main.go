@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/application/tracker"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/application/user"
+	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/constant"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client/coincap"
 	exchangerate "github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client/exchange_rate"
@@ -20,8 +21,8 @@ func main() {
 	repository := repository.NewRespository(db, redcl)
 
 	// instatiate client
-	clientCoinCap := client.NewAPIClient("https://api.coincap.io")
-	clientExchangeRate := client.NewAPIClient("https://api.apilayer.com/exchangerates_data")
+	clientCoinCap := client.NewAPIClient(constant.CoinCapHost)
+	clientExchangeRate := client.NewAPIClient(constant.ExchangeRateHost)
 
 	// instatiate service
 	userService := user.NewUserService(repository)
@@ -35,5 +36,5 @@ func main() {
 	// call handlers
 	transport.Handlers(userService, trackerService, redcl, r)
 
-	r.Run(":8080")
+	r.Run(constant.Port)
 }
