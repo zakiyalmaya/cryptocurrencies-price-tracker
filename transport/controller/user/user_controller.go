@@ -78,3 +78,20 @@ func (u *UserController) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, model.HTTPSuccessResponse(res))
 }
+
+func (u *UserController) Logout(c *gin.Context) {
+	defer c.Request.Body.Close()
+
+	username, exists := c.Get("username")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, model.HTTPErrorResponse("Username not found in context"))
+		return
+	}
+
+	if err := u.userSvc.Logout(username.(string)); err != nil {
+		c.JSON(http.StatusInternalServerError, model.HTTPErrorResponse(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, model.HTTPSuccessResponse(nil))
+}

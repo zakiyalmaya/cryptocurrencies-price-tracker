@@ -14,8 +14,10 @@ import (
 func main() {
 	// instatiate repository
 	db := repository.DBConnection()
+	redcl := repository.RedisClient()
 	defer db.Close()
-	repository := repository.NewRespository(db)
+
+	repository := repository.NewRespository(db, redcl)
 
 	// instatiate client
 	clientCoinCap := client.NewAPIClient("https://api.coincap.io")
@@ -31,7 +33,7 @@ func main() {
 	r := gin.Default()
 
 	// call handlers
-	transport.Handlers(userService, trackerService, r)
+	transport.Handlers(userService, trackerService, redcl, r)
 
 	r.Run(":8080")
 }

@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"log"
 
+	"github.com/go-redis/redis/v8"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/repository/tracker"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/repository/user"
@@ -11,13 +13,15 @@ import (
 
 type Repositories struct {
 	db      *sql.DB
+	Redcl   *redis.Client
 	User    user.UserRepository
 	Tracker tracker.TrackerRepository
 }
 
-func NewRespository(db *sql.DB) *Repositories {
+func NewRespository(db *sql.DB, redcl *redis.Client) *Repositories {
 	return &Repositories{
 		db:      db,
+		Redcl:   redcl,
 		User:    user.NewUserRepository(db),
 		Tracker: tracker.NewTrackerRepository(db),
 	}
@@ -63,4 +67,20 @@ func createUserTrackedCoinTable(db *sql.DB) {
 	if err != nil {
 		log.Panicln("error creating user_tracked_coins table: ", err.Error())
 	}
+}
+
+func RedisClient() *redis.Client {
+	option := &redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	}
+
+	redcl := redis.NewClient(option)
+	if err := redcl.Ping(context.Background()).Err(); err != nil {
+		log.Panicln("error connect to redis: ", err.Error())
+		return nil
+	}
+
+	return redcl
 }

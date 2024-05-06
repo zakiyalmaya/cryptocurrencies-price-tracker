@@ -1,8 +1,10 @@
 package user
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -33,7 +35,8 @@ func (u *userSvcImpl) Login(auth *model.AuthRequest) (*model.AuthResponse, error
 		return nil, fmt.Errorf("invalid password")
 	}
 
-	expirationTime := time.Now().Add(5 * time.Minute)
+	duration := 15 * time.Minute
+	expirationTime := time.Now().Add(duration)
 	claims := &model.AuthClaims{
 		UserID:   user.ID,
 		Username: user.Username,
@@ -48,6 +51,12 @@ func (u *userSvcImpl) Login(auth *model.AuthRequest) (*model.AuthResponse, error
 		return nil, fmt.Errorf("failed to create token")
 	}
 
+	err = u.repos.Redcl.Set(context.Background(), "jwt-token-"+user.Username, tokenString, duration).Err()
+	if err != nil {
+		log.Println("Failed to store token in Redis:", err.Error())
+		return nil, fmt.Errorf("failed to store token in Redis")
+	}
+
 	return &model.AuthResponse{
 		Name:     user.Name,
 		Username: user.Username,
@@ -60,5 +69,15 @@ func (u *userSvcImpl) Register(user *model.UserEntity) error {
 		return fmt.Errorf("error when register user to database")
 	}
 
+	return nil
+}
+
+func (u *userSvcImpl) Logout(username string) error {
+	err := u.repos.Redcl.Del(context.Background(), "jwt-token-"+username).Err()
+	if err != nil {
+		log.Println("Failed to delete token from Redis:", err.Error())
+		return fmt.Errorf("failed to delete token from Redis")
+	}
+	
 	return nil
 }
