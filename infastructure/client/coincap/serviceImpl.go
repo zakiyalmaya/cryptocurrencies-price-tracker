@@ -1,35 +1,33 @@
 package coincap
 
 import (
-	"bytes"
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/model"
 )
 
-type coinCapServiceImpl struct {
+type coinCapSvcImpl struct {
 	CoinCap *client.APIClient
 }
 
 func NewCoinCapService(client *client.APIClient) CoinCapService {
-	return &coinCapServiceImpl{
+	return &coinCapSvcImpl{
 		CoinCap: client,
 	}
 }
 
-func (c *coinCapServiceImpl) GetAssets(req *model.AssetRequest) (*model.AssetsResponse, error) {
-	endpoint := "/v2/assets/"
-	url := c.CoinCap.BaseURL + endpoint
+func (c *coinCapSvcImpl) GetAssets(req *model.AssetRequest) (*model.AssetsResponse, error) {
+	endpoint := "/v2/assets"
+	urlValue := c.CoinCap.BaseURL + endpoint
 
-	requestBodyJSON, err := json.Marshal(req)
-	if err != nil {
-		return nil, err
-	}
+	queryParam := buildQueryParamGetAssets(req)
+	urlValue += "?" + queryParam
 
-	request, err := http.NewRequest("GET", url, bytes.NewBuffer(requestBodyJSON))
+	request, err := http.NewRequest("GET", urlValue, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -51,4 +49,25 @@ func (c *coinCapServiceImpl) GetAssets(req *model.AssetRequest) (*model.AssetsRe
 	}
 
 	return response, nil
+}
+
+func buildQueryParamGetAssets(req *model.AssetRequest) string {
+	params := url.Values{}
+	if req.Ids != nil {
+		params.Set("ids", *req.Ids)
+	}
+
+	if req.Search != nil {
+		params.Set("search", *req.Search)
+	}
+
+	if req.Limit != nil {
+		params.Set("limit", *req.Limit)
+	}
+
+	if req.Offset != nil {
+		params.Set("offset", *req.Offset)
+	}
+
+	return params.Encode()
 }

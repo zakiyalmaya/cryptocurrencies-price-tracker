@@ -39,7 +39,7 @@ func (t *TrackerController) GetUserTrackedList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, model.HTTPSuccessResponse(res))
 }
 
 func (t *TrackerController) AddUserTrackedCoin(c *gin.Context) {

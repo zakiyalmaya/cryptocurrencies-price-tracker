@@ -10,17 +10,17 @@ import (
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/model"
 )
 
-type UserSvc struct {
+type userSvcImpl struct {
 	repos *repository.Repositories
 }
 
 func NewUserService(repos *repository.Repositories) UserService {
-	return &UserSvc{
+	return &userSvcImpl{
 		repos: repos,
 	}
 }
 
-func (u *UserSvc) Login(auth *model.AuthRequest) (*model.AuthResponse, error) {
+func (u *userSvcImpl) Login(auth *model.AuthRequest) (*model.AuthResponse, error) {
 	user, err := u.repos.User.Get(auth.Username)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -55,7 +55,7 @@ func (u *UserSvc) Login(auth *model.AuthRequest) (*model.AuthResponse, error) {
 	}, nil
 }
 
-func (u *UserSvc) Register(user *model.UserEntity) error {
+func (u *userSvcImpl) Register(user *model.UserEntity) error {
 	if err := u.repos.User.Create(user); err != nil {
 		return err
 	}

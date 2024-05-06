@@ -25,7 +25,7 @@ func (t *trackerRepoImpl) GetUserTrackedCoins(username string) (*model.UserTrack
 	}
 	defer rows.Close()
 
-	trackedCoins := make([]model.Coin, 0)
+	trackedCoins := make([]*model.Coin, 0)
 	for rows.Next() {
 		var trackedCoin model.Coin
 		if err := rows.Scan(
@@ -34,7 +34,7 @@ func (t *trackerRepoImpl) GetUserTrackedCoins(username string) (*model.UserTrack
 			&trackedCoin.CoinSymbol); err != nil {
 			return nil, err
 		}
-		trackedCoins = append(trackedCoins, trackedCoin)
+		trackedCoins = append(trackedCoins, &trackedCoin)
 	}
 
 	if err := rows.Err(); err != nil {

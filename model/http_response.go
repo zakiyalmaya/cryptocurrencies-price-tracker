@@ -1,7 +1,7 @@
 package model
 
 type ResponseSystem struct {
-	ResponseMessage string       `json:"responseMessage"`
+	ResponseMessage string      `json:"responseMessage"`
 	Data            interface{} `json:"data,omitempty"`
 }
 

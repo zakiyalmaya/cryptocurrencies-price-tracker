@@ -18,7 +18,7 @@ func NewUserController(userSvc user.UserService) *UserController {
 	}
 }
 
-func (userCtrl *UserController) Register(c *gin.Context) {
+func (u *UserController) Register(c *gin.Context) {
 	defer c.Request.Body.Close()
 
 	user := &model.UserEntity{}
@@ -27,7 +27,7 @@ func (userCtrl *UserController) Register(c *gin.Context) {
 		return
 	}
 
-	err := userCtrl.userSvc.Register(user)
+	err := u.userSvc.Register(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.HTTPErrorResponse(err.Error()))
 		return
@@ -36,7 +36,7 @@ func (userCtrl *UserController) Register(c *gin.Context) {
 	c.JSON(http.StatusOK, model.HTTPSuccessResponse(nil))
 }
 
-func (userCtrl *UserController) Login(c *gin.Context) {
+func (u *UserController) Login(c *gin.Context) {
 	defer c.Request.Body.Close()
 
 	auth := &model.AuthRequest{}
@@ -45,7 +45,7 @@ func (userCtrl *UserController) Login(c *gin.Context) {
 		return
 	}
 
-	res, err := userCtrl.userSvc.Login(auth)
+	res, err := u.userSvc.Login(auth)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.HTTPErrorResponse(err.Error()))
 		return

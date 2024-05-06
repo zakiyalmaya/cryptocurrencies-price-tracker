@@ -1,25 +1,28 @@
 package tracker
 
 import (
+	"errors"
+	"strconv"
+
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client/coincap"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/repository"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/model"
 )
 
-type trackerSvc struct {
+type trackerSvcImpl struct {
 	coinCapSvc coincap.CoinCapService
 	repos      *repository.Repositories
 }
 
 func NewTrackerService(coinCapSvc coincap.CoinCapService, repos *repository.Repositories) TrackerService {
-	return &trackerSvc{
+	return &trackerSvcImpl{
 		coinCapSvc: coinCapSvc,
 		repos:      repos,
 	}
 }
 
-func (c *trackerSvc) GetUserTrackedList(username string) (*model.UserTrackedCoin, error) {
-	userCoins, err := c.repos.Tracker.GetUserTrackedCoins(username)
+func (t *trackerSvcImpl) GetUserTrackedList(username string) (*model.UserTrackedCoin, error) {
+	userCoins, err := t.repos.Tracker.GetUserTrackedCoins(username)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +40,7 @@ func (c *trackerSvc) GetUserTrackedList(username string) (*model.UserTrackedCoin
 		return userCoins, nil
 	}
 
-	resAssets, err := c.coinCapSvc.GetAssets(&model.AssetRequest{Ids: &coinIds})
+	resAssets, err := t.coinCapSvc.GetAssets(&model.AssetRequest{Ids: &coinIds})
 	if err != nil {
 		return nil, err
 	}
@@ -46,6 +49,13 @@ func (c *trackerSvc) GetUserTrackedList(username string) (*model.UserTrackedCoin
 		for _, asset := range resAssets.Data {
 			if asset.ID == coin.CoinID {
 				// todo convert USD to IDR
+				price, err := strconv.ParseFloat(asset.PriceUsd, 64)
+				if err != nil {
+					return nil, errors.New("error when parsing price")
+				}
+
+				coin.PriceIDR = &price
+				break
 			}
 		}
 	}
@@ -53,24 +63,24 @@ func (c *trackerSvc) GetUserTrackedList(username string) (*model.UserTrackedCoin
 	return userCoins, nil
 }
 
-func (c *trackerSvc) AddUserTrackedCoin(req *model.TrackerEntity) error {
-	if err := c.repos.Tracker.Create(req); err != nil {
+func (t *trackerSvcImpl) AddUserTrackedCoin(req *model.TrackerEntity) error {
+	if err := t.repos.Tracker.Create(req); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (c *trackerSvc) DeleteUserTrackedCoin(userID int, coinID string) error {
-	if err := c.repos.Tracker.Delete(userID, coinID); err != nil {
+func (t *trackerSvcImpl) DeleteUserTrackedCoin(userID int, coinID string) error {
+	if err := t.repos.Tracker.Delete(userID, coinID); err != nil {
 		return err
 	}
 	
 	return nil
 }
 
-func (c *trackerSvc) GetList() (*[]model.TrackerEntity, error) {
-	res, err := c.repos.Tracker.GetList()
+func (t *trackerSvcImpl) GetList() (*[]model.TrackerEntity, error) {
+	res, err := t.repos.Tracker.GetList()
 	if err != nil {
 		return nil, err
 	}

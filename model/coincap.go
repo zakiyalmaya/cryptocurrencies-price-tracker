@@ -3,8 +3,8 @@ package model
 type AssetRequest struct {
 	Search *string `json:"search,omitempty"`
 	Ids    *string `json:"ids,omitempty"`
-	Offset *int    `json:"offset,omitempty"`
-	Limit  *int    `json:"limit,omitempty"`
+	Offset *string `json:"offset,omitempty"`
+	Limit  *string `json:"limit,omitempty"`
 }
 
 type AssetResponse struct {
