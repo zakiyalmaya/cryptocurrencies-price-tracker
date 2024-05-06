@@ -87,15 +87,3 @@ func (t *TrackerController) DeleteUserTrackedCoin(c *gin.Context) {
 	c.JSON(http.StatusOK, model.HTTPSuccessResponse(nil))
 
 }
-
-func (t *TrackerController) GetList(c *gin.Context) {
-	defer c.Request.Body.Close()
-
-	res, err := t.trackerSvc.GetList()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.HTTPErrorResponse(err.Error()))
-		return
-	}
-
-	c.JSON(http.StatusOK, model.HTTPSuccessResponse(res))
-}

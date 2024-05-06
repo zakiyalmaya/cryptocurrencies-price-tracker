@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"log"
 
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/model"
 )
@@ -20,6 +21,7 @@ func (u *userRepoImpl) Create(user *model.UserEntity) error {
 	_, err := u.db.Exec("INSERT INTO users (name, email, username, password) VALUES (?, ?, ?, ?)",
 		user.Name, user.Email, user.Username, user.Password)
 	if err != nil {
+		log.Println("errorRepository: ", err.Error())
 		return err
 	}
 
@@ -29,8 +31,9 @@ func (u *userRepoImpl) Create(user *model.UserEntity) error {
 func (u *userRepoImpl) Get(username string) (*model.UserEntity, error) {
 	user := &model.UserEntity{}
 	res := u.db.QueryRow("SELECT id, name, email, username, password FROM users WHERE username = ?", username)
-	
+
 	if err := res.Scan(&user.ID, &user.Name, &user.Email, &user.Username, &user.Password); err != nil {
+		log.Println("errorRepository: ", err.Error())
 		return nil, err
 	}
 

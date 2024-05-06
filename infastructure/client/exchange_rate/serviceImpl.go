@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -43,28 +44,32 @@ func (e *exchangeRateSvcImpl) GetLatest(base, to string) (float64, error) {
 
 	request, err := http.NewRequest("GET", urlValue, nil)
 	if err != nil {
+		log.Println("errorClient: ", err.Error())
 		return 0, err
 	}
 	request.Header.Set("apikey", "CgWMWUg82yzKxdiuZ6UYFJWFrUKjzllZ")
 
 	resp, err := e.exchangeRate.Client.Do(request)
 	if err != nil {
+		log.Println("errorClient: ", err.Error())
 		return 0, err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
+		log.Println("errorClient: ", err.Error())
 		return 0, err
 	}
 
 	var data map[string]interface{}
 	if err := json.Unmarshal(body, &data); err != nil {
+		log.Println("errorClient: ", err.Error())
 		return 0, err
 	}
 
 	if isSuccess, ok := data["success"]; ok && !isSuccess.(bool) {
-		return 0, fmt.Errorf("failed to get exchange rates")
+		return 0, fmt.Errorf("failed to call exchange rate API")
 	}
 
 	rates, ok := data["rates"].(map[string]interface{})

@@ -2,7 +2,7 @@ package user
 
 import (
 	"database/sql"
-	"errors"
+	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -24,13 +24,13 @@ func (u *userSvcImpl) Login(auth *model.AuthRequest) (*model.AuthResponse, error
 	user, err := u.repos.User.Get(auth.Username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, errors.New("invalid username")
+			return nil, fmt.Errorf("invalid username")
 		}
 		return nil, err
 	}
 
 	if user.Password != auth.Password {
-		return nil, errors.New("invalid password")
+		return nil, fmt.Errorf("invalid password")
 	}
 
 	expirationTime := time.Now().Add(5 * time.Minute)
@@ -45,7 +45,7 @@ func (u *userSvcImpl) Login(auth *model.AuthRequest) (*model.AuthResponse, error
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte("cryptocurrencies-price-tracker-secret"))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create token")
 	}
 
 	return &model.AuthResponse{
@@ -57,7 +57,7 @@ func (u *userSvcImpl) Login(auth *model.AuthRequest) (*model.AuthResponse, error
 
 func (u *userSvcImpl) Register(user *model.UserEntity) error {
 	if err := u.repos.User.Create(user); err != nil {
-		return err
+		return fmt.Errorf("error when register user to database")
 	}
 
 	return nil

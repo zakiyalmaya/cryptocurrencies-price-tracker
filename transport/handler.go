@@ -17,5 +17,4 @@ func Handlers(userSvc user.UserService, trackerSvc tracker.TrackerService, r *gi
 	r.Use(middleware.AuthMiddleware()).GET("/user/tracker", ctrl.Tracker.GetUserTrackedList)
 	r.Use(middleware.AuthMiddleware()).POST("/user/tracker", ctrl.Tracker.AddUserTrackedCoin)
 	r.Use(middleware.AuthMiddleware()).DELETE("/user/tracker/:coinId", ctrl.Tracker.DeleteUserTrackedCoin)
-	r.GET("/test", ctrl.Tracker.GetList)
 }

@@ -6,5 +6,5 @@ type TrackerRepository interface {
 	GetUserTrackedCoins(username string) (*model.UserTrackedCoin, error)
 	Create(req *model.TrackerEntity) error
 	Delete(userID int, coinID string) error
-	GetList() (*[]model.TrackerEntity, error)
+	Get(userID int, coinID string) (*model.TrackerEntity, error)
 }

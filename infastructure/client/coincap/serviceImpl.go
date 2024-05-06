@@ -3,6 +3,7 @@ package coincap
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 
@@ -29,22 +30,26 @@ func (c *coinCapSvcImpl) GetAssets(req *model.AssetRequest) (*model.AssetsRespon
 
 	request, err := http.NewRequest("GET", urlValue, nil)
 	if err != nil {
+		log.Println("errorClient: ", err.Error())
 		return nil, err
 	}
 
 	resp, err := c.coinCap.Client.Do(request)
 	if err != nil {
+		log.Println("errorClient: ", err.Error())
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
+		log.Println("errorClient: ", err.Error())
 		return nil, err
 	}
 
 	response := &model.AssetsResponse{}
 	if err := json.Unmarshal(body, &response); err != nil {
+		log.Println("errorClient: ", err.Error())
 		return nil, err
 	}
 
