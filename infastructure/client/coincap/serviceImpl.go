@@ -76,3 +76,35 @@ func buildQueryParamGetAssets(req *model.AssetRequest) string {
 
 	return params.Encode()
 }
+
+func (c *coinCapSvcImpl) GetAsset(coinID string) (*model.AssetResponse, error) {
+	endpoint := "/v2/assets/" + coinID
+	urlValue := c.coinCap.BaseURL + endpoint
+
+	request, err := http.NewRequest("GET", urlValue, nil)
+	if err != nil {
+		log.Println("errorClient: ", err.Error())
+		return nil, err
+	}
+
+	resp, err := c.coinCap.Client.Do(request)
+	if err != nil {
+		log.Println("errorClient: ", err.Error())
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("errorClient: ", err.Error())
+		return nil, err
+	}
+
+	response := &model.AssetResponse{}
+	if err := json.Unmarshal(body, &response); err != nil {
+		log.Println("errorClient: ", err.Error())
+		return nil, err
+	}
+
+	return response, nil
+}

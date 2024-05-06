@@ -7,7 +7,7 @@ type AssetRequest struct {
 	Limit  *string `json:"limit,omitempty"`
 }
 
-type AssetResponse struct {
+type Response struct {
 	ID                string `json:"id"`
 	Rank              string `json:"rank"`
 	Symbol            string `json:"symbol"`
@@ -22,5 +22,9 @@ type AssetResponse struct {
 }
 
 type AssetsResponse struct {
-	Data []AssetResponse `json:"data"`
+	Data []Response `json:"data"`
+}
+
+type AssetResponse struct {
+	Data Response `json:"data"`
 }

@@ -21,3 +21,8 @@ type UserTrackedCoin struct {
 	Username     string `json:"username"`
 	TrackedCoins []*Coin
 }
+
+type AddUserTrackedCoinRequest struct {
+	UserID int    `json:"userId"`
+	CoinID string `json:"coinId"`
+}
