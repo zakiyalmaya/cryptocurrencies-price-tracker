@@ -29,7 +29,7 @@ func NewTrackerService(
 }
 
 func (t *trackerSvcImpl) GetUserTrackedList(username string) (*model.UserTrackedCoin, error) {
-	userCoins, err := t.repos.Tracker.GetUserTrackedCoins(username)
+	userCoins, err := t.repos.Tracker.GetByUsername(username)
 	if err != nil {
 		return nil, fmt.Errorf("error when get user tracked coins to database")
 	}
@@ -87,7 +87,7 @@ func (t *trackerSvcImpl) AddUserTrackedCoin(req *model.AddUserTrackedCoinRequest
 		return fmt.Errorf("error the coin is not in the asset list")
 	}
 
-	coinTracked, err := t.repos.Tracker.Get(req.UserID, req.CoinID)
+	coinTracked, err := t.repos.Tracker.GetByUserIDAndCoinID(req.UserID, req.CoinID)
 	if err != nil && err != sql.ErrNoRows {
 		return fmt.Errorf("error when get tracked coin to database")
 	}

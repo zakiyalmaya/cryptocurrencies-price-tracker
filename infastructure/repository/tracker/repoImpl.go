@@ -17,7 +17,7 @@ func NewTrackerRepository(db *sql.DB) TrackerRepository {
 	}
 }
 
-func (t *trackerRepoImpl) GetUserTrackedCoins(username string) (*model.UserTrackedCoin, error) {
+func (t *trackerRepoImpl) GetByUsername(username string) (*model.UserTrackedCoin, error) {
 	userTrackedCoin := &model.UserTrackedCoin{}
 	rows, err := t.db.Query("SELECT utc.coin_id, utc.coin_name, utc.coin_symbol FROM users u "+
 		"JOIN user_tracked_coins utc ON u.id = utc.user_id WHERE u.username = ?", username)
@@ -70,7 +70,7 @@ func (t *trackerRepoImpl) Delete(userID int, coinID string) error {
 	return nil
 }
 
-func (t *trackerRepoImpl) Get(userID int, coinID string) (*model.TrackerEntity, error) {
+func (t *trackerRepoImpl) GetByUserIDAndCoinID(userID int, coinID string) (*model.TrackerEntity, error) {
 	trackedCoin := &model.TrackerEntity{}
 	resp := t.db.QueryRow("SELECT utc.id, utc.user_id, utc.coin_id, utc.coin_name, utc.coin_symbol " +
 		"FROM user_tracked_coins utc WHERE utc.user_id = ? AND utc.coin_id = ?", userID, coinID)
