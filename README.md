@@ -10,12 +10,14 @@ This application uses SQLite for its database. It utilizes the client `https://d
 # GETTING STARTED
 
 - Clone the git repository
-
-    https://github.com/zakiyalmaya/cryptocurrencies-price-tracker.git
+  ```sh
+  https://github.com/zakiyalmaya/cryptocurrencies-price-tracker.git
+  ```
 
 - Run the `./main.go` file using this command
-
-    go run ./main.go
+  ```sh
+  go run ./main.go
+  ```
     
 
 # REST API
