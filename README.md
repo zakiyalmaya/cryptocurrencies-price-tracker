@@ -7,6 +7,17 @@ This application uses SQLite for its database. It utilizes the client `https://d
 `config.go` is a configuration file that contains values such as host, port, key, secret, and others used by the application.
 
 
+# GETTING STARTED
+
+- Clone the git repository
+
+    https://github.com/zakiyalmaya/cryptocurrencies-price-tracker.git
+
+- Run the `./main.go` file using this command
+
+    go run ./main.go
+    
+
 # REST API
 
 ## Sign Up/Register User
