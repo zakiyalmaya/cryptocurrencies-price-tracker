@@ -21,33 +21,23 @@ func NewUserController(userSvc user.UserService) *UserController {
 func (u *UserController) Register(c *gin.Context) {
 	defer c.Request.Body.Close()
 
-	user := &model.UserEntity{}
+	user := &model.UserRequest{}
 	if err := c.ShouldBindJSON(user); err != nil {
 		c.JSON(http.StatusBadRequest, model.HTTPErrorResponse(err.Error()))
 		return
 	}
 
-	if user.Name == "" {
-		c.JSON(http.StatusBadRequest, model.HTTPErrorResponse("name is required!"))
+	if err := validateUser(user); err != nil {
+		c.JSON(http.StatusBadRequest, model.HTTPErrorResponse(err.Error()))
 		return
 	}
 
-	if user.Username == "" {
-		c.JSON(http.StatusBadRequest, model.HTTPErrorResponse("username is required!"))
-		return
-	}
-
-	if user.Email == "" {
-		c.JSON(http.StatusBadRequest, model.HTTPErrorResponse("email is required!"))
-		return
-	}
-
-	if user.Password == "" {
-		c.JSON(http.StatusBadRequest, model.HTTPErrorResponse("password is required!"))
-		return
-	}
-
-	err := u.userSvc.Register(user)
+	err := u.userSvc.Register(&model.UserEntity{
+		Name:     user.Name,
+		Username: user.Username,
+		Email:    user.Email,
+		Password: user.Password,
+	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.HTTPErrorResponse(err.Error()))
 		return

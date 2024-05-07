@@ -7,13 +7,21 @@ import (
 )
 
 type UserEntity struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Username  string    `json:"username"`
-	Password  string    `json:"password,omitempty"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID        int
+	Name      string
+	Email     string
+	Username  string
+	Password  string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type UserRequest struct {
+	Name            string `json:"name"`
+	Email           string `json:"email"`
+	Username        string `json:"username"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirmPassword"`
 }
 
 type AuthRequest struct {
