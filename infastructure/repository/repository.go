@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/constant"
+	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/config"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/repository/tracker"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/repository/user"
 )
@@ -29,7 +29,7 @@ func NewRespository(db *sql.DB, redcl *redis.Client) *Repositories {
 }
 
 func DBConnection() *sql.DB {
-	db, err := sql.Open("sqlite3", constant.SQLiteDBName)
+	db, err := sql.Open("sqlite3", config.SQLiteDBName)
 	if err != nil {
 		log.Panicln("error connecting to database: ", err.Error())
 		return nil
@@ -72,8 +72,8 @@ func createUserTrackedCoinTable(db *sql.DB) {
 
 func RedisClient() *redis.Client {
 	option := &redis.Options{
-		Addr:     constant.RedisHost,
-		Password: constant.RedisPass,
+		Addr:     config.RedisHost,
+		Password: config.RedisPass,
 		DB:       0,
 	}
 

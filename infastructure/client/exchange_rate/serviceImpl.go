@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/constant"
+	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/config"
 	"github.com/zakiyalmaya/cryptocurrencies-price-tracker/infastructure/client"
 )
 
@@ -48,7 +48,7 @@ func (e *exchangeRateSvcImpl) GetLatest(base, to string) (float64, error) {
 		log.Println("errorClient: ", err.Error())
 		return 0, err
 	}
-	request.Header.Set("apikey", constant.ExchangeRateAPIKey)
+	request.Header.Set("apikey", config.ExchangeRateAPIKey)
 
 	resp, err := e.exchangeRate.Client.Do(request)
 	if err != nil {
