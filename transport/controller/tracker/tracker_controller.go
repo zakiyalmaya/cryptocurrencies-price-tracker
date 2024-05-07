@@ -19,14 +19,6 @@ func NewTrackerController(trackerSvc tracker.TrackerService) *TrackerController 
 }
 
 func (t *TrackerController) GetUserTrackedList(c *gin.Context) {
-	defer c.Request.Body.Close()
-
-	req := &model.AssetRequest{}
-	if err := c.ShouldBindJSON(req); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-
 	username, exists := c.Get("username")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, model.HTTPErrorResponse("Username not found in context"))
@@ -73,8 +65,6 @@ func (t *TrackerController) AddUserTrackedCoin(c *gin.Context) {
 }
 
 func (t *TrackerController) DeleteUserTrackedCoin(c *gin.Context) {
-	defer c.Request.Body.Close()
-
 	coinID := c.Param("coinId")
 	if coinID == "" {
 		c.JSON(http.StatusBadRequest, model.HTTPErrorResponse("coinId is required!"))

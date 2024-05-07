@@ -70,8 +70,6 @@ func (u *UserController) Login(c *gin.Context) {
 }
 
 func (u *UserController) Logout(c *gin.Context) {
-	defer c.Request.Body.Close()
-
 	username, exists := c.Get("username")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, model.HTTPErrorResponse("Username not found in context"))
