@@ -15,9 +15,8 @@ This is a POST request, for create/register user by submitting data to an API vi
 
 ### Request
 
-    `POST /user`
+`POST /user`
 
-    ```sh
     curl --location 'http://localhost:8080/user' \
     --header 'Content-Type: application/json' \
     --data-raw '{
@@ -27,17 +26,13 @@ This is a POST request, for create/register user by submitting data to an API vi
         "password": "Mickey123!",
         "confirmPassword": "Mickey123!"
     }'
-    ```
 
 ### Response
 
     HTTP/1.1 200 OK
-    
-    ```sh
     {
         "responseMessage": "Success"
     }
-    ```
 
 ## Login User
 
@@ -45,22 +40,19 @@ The Login API is used to authenticate a user in this application. Upon successfu
 
 ### Request
 
-    `POST /user/login`
+`POST /user/login`
 
-    ```sh
     curl --location 'http://localhost:8080/user/login' \
     --header 'Content-Type: application/json' \
     --data '{
         "username": "mickeymouse",
         "password": "Mickey123!"
     }'
-    ```
+
     
 ### Response
 
     HTTP/1.1 200 OK
-
-    ```sh
     {
         "responseMessage": "Success",
         "data": {
@@ -69,7 +61,6 @@ The Login API is used to authenticate a user in this application. Upon successfu
             "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJuYW1lIjoibWlja2V5bW91c2UiLCJleHAiOjE3MTUwNDkxMDd9.jOxue-Yy6rNKLe7Ab1f1XqRReZcMNWDWOdEaV4vGeqg"
         }
     }
-    ```
 
 ## Logout User
 
@@ -77,23 +68,18 @@ The Logout API is used to invalidate the token of a logged-in user, thereby effe
 
 ### Request
 
-    `POST /user/logout`
+`POST /user/logout`
 
-    ```sh
     curl --location --request POST 'http://localhost:8080/user/logout' \
     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJuYW1lIjoibWlja2V5bW91c2UiLCJleHAiOjE3MTUwNDkxMDd9.jOxue-Yy6rNKLe7Ab1f1XqRReZcMNWDWOdEaV4vGeqg' \
     --data ''
-    ```
 
 ### Response
 
     HTTP/1.1 200 OK
-
-    ```sh
     {
         "responseMessage": "Success"
     }
-    ```
 
 ## Asset List
 
@@ -101,20 +87,16 @@ This is a GET request for get all cryptocurrency assets and their price in USD.
 
 ### Request
 
-    `GET /assets`
+`GET /assets`
 
-    ```sh
     curl --location --request GET 'http://localhost:8080/assets' \
     --header 'Content-Type: application/json' \
     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJuYW1lIjoibWlja2V5bW91c2UiLCJleHAiOjE3MTUwNDk3Nzd9.b23t4HGF1481vQDyLwMUPUBgm0XZMZxUttnSWE-TXTg' \
     --data '{}'
-    ```
 
 ### Response
 
     HTTP/1.1 200 OK
-
-    ```sh
     {
         "responseMessage": "Success",
         "data": {
@@ -149,7 +131,6 @@ This is a GET request for get all cryptocurrency assets and their price in USD.
             ]
         }
     }
-    ```
 
 ## Get User Tracked Coins
 
@@ -157,20 +138,16 @@ This is a GET endpoint to show user list of tracked coins and their price in IDR
 
 ### Request
 
-    `GET /user/tracker`
+`GET /user/tracker`
 
-    ```sh
     curl --location --request GET 'http://localhost:8080/user/tracker' \
     --header 'Content-Type: application/json' \
     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJuYW1lIjoibWlja2V5bW91c2UiLCJleHAiOjE3MTUwNDk3Nzd9.b23t4HGF1481vQDyLwMUPUBgm0XZMZxUttnSWE-TXTg' \
     --data '{}'
-    ```
 
 ### Response
 
     HTTP/1.1 200 OK
-
-    ```sh
     {
         "responseMessage": "Success",
         "data": {
@@ -197,7 +174,6 @@ This is a GET endpoint to show user list of tracked coins and their price in IDR
             ]
         }
     }
-    ```
 
 ## Add User Tracked Coin
 
@@ -205,26 +181,21 @@ This is a POST endpoint for user can add coin to tracker.
 
 ### Request
 
-    `POST /user/tracker`
+`POST /user/tracker`
 
-    ```sh
     curl --location 'http://localhost:8080/user/tracker' \
     --header 'Content-Type: application/json' \
     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJuYW1lIjoibWlja2V5bW91c2UiLCJleHAiOjE3MTUwNDk3Nzd9.b23t4HGF1481vQDyLwMUPUBgm0XZMZxUttnSWE-TXTg' \
     --data '{
         "coinId": "ethereum"
     }'
-    ```
 
 ### Response
 
     HTTP/1.1 200 OK
-
-    ```sh
     {
         "responseMessage": "Success"
     }
-    ```
 
 ## Delete User Tracked Coin
 
@@ -232,20 +203,15 @@ This is a DELETE endpoint for user can remove coin from tracker.
 
 ### Request
 
-    `DELETE /user/tracker/{coinId}`
+`DELETE /user/tracker/{coinId}`
 
-    ```sh
     curl --location --request DELETE 'http://localhost:8080/user/tracker/bitcoin' \
     --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJuYW1lIjoibWlja2V5bW91c2UiLCJleHAiOjE3MTUwNTA3MjR9.2DUWIJTQ8ALZCuGUM_FRqOGTtlYaBP0QgGDzI0ig7ZM' \
     --data ''
-    ```
 
 ### Response
 
     HTTP/1.1 200 OK
-
-    ```sh
     {
         "responseMessage": "Success"
     }
-    ```
